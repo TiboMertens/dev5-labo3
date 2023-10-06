@@ -27,20 +27,32 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
+  min-width: 300px;
   min-height: 100vh;
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 1.5em;
   line-height: 1.1;
+  margin-top: 125px;
 }
 
 #app {
-  max-width: 1280px;
+  width: 300px;
+  height: 600px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  border: 3px solid white;
+}
+
+#app-1 {
+  height: 50%;
+  text-align: center;
+}
+
+#app-2 {
+  height: 50%;
 }
 
 .logo {
