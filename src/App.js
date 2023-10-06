@@ -18,19 +18,35 @@ export default class App {
   }
 
   getWeather(x, y) {
-    // url: https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m&current_weather=true&forecast_days=1
-    // fetch, then log result
+    const storageKey = "weatherData";
+    const storedData = localStorage.getItem(storageKey);
+
+    if (storedData) {
+      const { timestamp, data } = JSON.parse(storedData);
+      const currentTime = new Date().getTime();
+
+      // Check if the stored data is less than an hour old (3600000 milliseconds = 1 hour)
+      if (currentTime - timestamp < 3600000) {
+        this.updateAdvertisement(data.current_weather.temperature);
+        return; // Use stored data and exit the function
+      }
+    }
+
+    // If stored data doesn't exist or is outdated, make a new API call
     fetch(
-      "https://api.open-meteo.com/v1/forecast?latitude=" +
-        x +
-        "&longitude=" +
-        y +
-        "&hourly=temperature_2m&current_weather=true&forecast_days=1"
+      `https://api.open-meteo.com/v1/forecast?latitude=${x}&longitude=${y}&hourly=temperature_2m&current_weather=true&forecast_days=1`
     )
       .then((response) => response.json())
       .then((data) => {
         let temperature = data.current_weather.temperature;
         this.updateAdvertisement(temperature);
+
+        // Store the new data in localStorage with a timestamp
+        const currentTime = new Date().getTime();
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify({ timestamp: currentTime, data })
+        );
       })
       .catch((error) => console.log(error));
   }
