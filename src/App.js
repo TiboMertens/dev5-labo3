@@ -39,7 +39,7 @@ export default class App {
       .then((response) => response.json())
       .then((data) => {
         let temperature = data.current_weather.temperature;
-        this.updateAdvertisement(temperature);
+        this.getRandomMeal(temperature);
 
         // Store the new data in localStorage with a timestamp
         const currentTime = new Date().getTime();
@@ -51,22 +51,30 @@ export default class App {
       .catch((error) => console.log(error));
   }
 
+  getRandomMeal(temperature) {
+    fetch('https://www.themealdb.com/api/json/v1/1/random.php')
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle the random meal data here, e.g., display it or use it in your application.
+        let meal = data.meals[0].strMealThumb // Access the random meal data
+        this.updateAdvertisement(temperature, meal);
+        // You can also update your UI or perform further actions with the meal data here.
+      })
+      .catch((error) => console.log(error));
+  }
+
   showError(error) {
     console.log(error);
   }
 
-  updateAdvertisement(temperature) {
+  updateAdvertisement(temperature, meal) {
     let title = document.querySelector("h1");
     let img = document.querySelector("img");
-    if (temperature >= 20) {
-      title.innerHTML = `It's ${temperature} °C outside, perfect weather for an icecream!`;
-      img.src = "images/ice.jpeg";
-    } else if (temperature <= 10) {
-      title.innerHTML = `It's ${temperature} °C outside, perfect weather for soup!`;
-      img.src = "images/soup.jpg";
-    } else {
-      title.innerHTML = `It's ${temperature} °C outside, perfect weather for a salad!`;
-      img.src = "images/salad.jpg";
-    }
+    let temp = temperature;
+    let mealImg = meal;
+    title.innerHTML = "Het is " + temp + " graden, perfect voor deze maaltijd!";
+    img.src = mealImg;
+    img.style.width = "300px";
+    img.style.height = "300px";
   }
 }
